@@ -19,7 +19,7 @@ local function SetLightsColorForEntity(ob, r,g,b)
   Citizen.InvokeNative(0x6EC2A67962296F49, ob, r,g,b)
 end
 --------------------------------------------------------------------------------------------------------------------------------------------
-local function spawnCar(c, md)
+local function spawnCar(c, md, engine)
   if not car then 
     local pc = GetEntityCoords(PlayerPedId())
     if c then 
@@ -82,7 +82,7 @@ local function spawnCar(c, md)
       vehicle = vehicle, 
       object = obj,
       engine = false,
-      speed = Config.maxspeeds[1],
+      speed = Config.maxspeeds[engine],
       headlights = false,
       headlight_l = hobj2, 
       headlight_r = hobj3,
@@ -219,8 +219,8 @@ Citizen.CreateThread(function()
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("redm_ford:spawn_c", function(pos, md)
-  spawnCar(pos, md)
+RegisterNetEvent("redm_ford:spawn_c", function(pos, md, engine)
+  spawnCar(pos, md, engine)
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("redm_ford:upgrade_update", function(id)
