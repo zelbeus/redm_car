@@ -15,10 +15,10 @@ local function spawnCar(c)
     while not HasModelLoaded(model2) do
       Citizen.Wait(5)
   end
-    local vehicle = CreateVehicle( model, pc.x,pc.y,pc.z,1.0, 1, 1, 0)
+    local vehicle = CreateVehicle( model, pc.x,pc.y,pc.z,pc.h, 1, 1, 0)
     SetEntityAlpha(vehicle, 0)
     Wait(100)
-    local obj = CreateObject(model2, pc, 1, 1, 1)
+    local obj = CreateObject(model2, pc.x, pc.y, pc.z, 1, 1, 1)
     Wait(500)
     AttachEntityToEntity(obj, vehicle, 0, 0.0, -0.22, -0.83, 0.0, 0.0, 90.0, 0, 1, 0, 0, 0, 2)
     local a = {
@@ -51,7 +51,7 @@ Citizen.CreateThread(function()
       for i,v in pairs(Config.CarSpawns) do 
         local dist = #(GetEntityCoords(PlayerPedId()) - vector3(v.pos[1], v.pos[2], v.pos[3]))
         if dist < 10.0 then
-            Citizen.InvokeNative(0x2A32FAA57B937173, 0x6903B113, v.pos[1], v.pos[2], v.pos[3], 0, 0, 0, 0, 0, 0, 0.3, 0.3,0.3, 126, 1, 1, 255, 0, 0, 2, 0, 0, 0, 0)
+            Citizen.InvokeNative(0x2A32FAA57B937173, 0x6903B113, v.pos[1], v.pos[2], v.pos[3]-0.95, 0, 0, 0, 0, 0, 0, 0.3, 0.3,0.3, 126, 1, 1, 255, 0, 0, 2, 0, 0, 0, 0)
         end
         if dist < 2.0 then 
           if IsControlPressed(0, Config.Engine) then 
