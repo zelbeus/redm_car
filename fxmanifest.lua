@@ -12,6 +12,11 @@ client_scripts {
     'client.lua'
 }
 
+server_scripts {
+    '@oxmysql/lib/MySQL.lua', --delete this line if you are using VORP, FOR QBR: '@oxmysql/lib/MySQL.lua', FOR REDEMRP: '@mysql-async/lib/MySQL.lua' | FOR REDEMRP-REBOOT: '@oxmysql/lib/MySQL.lua',
+    'server.lua',
+}
+
 shared_scripts {
     'config.lua',
 }
