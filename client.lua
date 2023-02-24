@@ -86,7 +86,9 @@ local function spawnCar(c, md, engine)
       headlights = false,
       headlight_l = hobj2, 
       headlight_r = hobj3,
-      headlight_b = hobj
+      headlight_b = hobj,
+      incar = false,
+      curr_speed = 0,
     }
     Wait(50)
     car = a
@@ -149,7 +151,7 @@ Citizen.CreateThread(function()
   while true do
     Wait(10)
     if car then 
-      if IsPedInVehicle(PlayerPedId(), car.vehicle, 1) then 
+      if car.incar then 
         if IsControlPressed(0, Config.Engine) then 
           if not car.engine then 
             print("engine on")
@@ -157,6 +159,7 @@ Citizen.CreateThread(function()
             SetVehicleEngineOn(GetVehiclePedIsIn(PlayerPedId()), 1, 1)
           else
             print("engine off")
+            car.curr_speed = 0.0
             SetVehicleEngineOn(GetVehiclePedIsIn(PlayerPedId()), 0, 1)
             if car.headlights then 
               car.headlights = not car.headlights
@@ -196,6 +199,7 @@ Citizen.CreateThread(function()
   while true do
       Wait(200)
       if car then 
+          car.incar = IsPedInVehicle(PlayerPedId(), car.vehicle, 1) 
           if car.engine then 
               if Config.WeirdSmokeAndSound then 
                 sound = sound + 1
@@ -205,17 +209,56 @@ Citizen.CreateThread(function()
                   AddExplosion(cc.x, cc.y, cc.z-2.9, 8, 0.0, true, false, 0)
                 end
               end
-              local c,a = GetEntityVelocity(car.vehicle, -1), GetEntitySpeedVector(car.vehicle, 1)
-              if a.y > car.speed.v1 then 
-                  SetVehicleForwardSpeed(car.vehicle, car.speed.v2)
-              end
-              if a.y < car.speed.r1 then 
-                  SetVehicleForwardSpeed(car.vehicle, car.speed.r2)
+              if car.incar then 
+                local a = GetEntitySpeedVector(car.vehicle, 1)
+                local b = a.y
+                if a.y < 0 then 
+                  b = a.y
+                  b = b - (b+b)
+                end
+                car.curr_speed = string.format("%.1f", b)
+                if a.y > car.speed.v1 then 
+                    SetVehicleForwardSpeed(car.vehicle, car.speed.v2)
+                end
+                if a.y < car.speed.r1 then 
+                    SetVehicleForwardSpeed(car.vehicle, car.speed.r2)
+                end
               end
           end
       else
         Wait(500)
       end
+  end
+end)
+
+Citizen.CreateThread(function()
+  local color1, color2 = {126,0,0, 200}, {126,0,0, 200}
+  while true do
+    Citizen.Wait(5)
+    if car then 
+      if car.incar then 
+        if car.engine then 
+          color2 = {0,126,0, 200}
+        else
+          color2 = {126,0,0, 200}
+        end
+        if car.headlights then 
+          color1 = {0,126,0, 200}
+        else
+          color1 = {126,0,0, 200}
+        end
+    SetTextColor(126,0,0, 215)
+    SetTextScale(0.35,0.35)
+    SetTextFontForCurrentCommand(0)--0,1,5,6, 9, 11, 12, 15, 18, 19, 20, 22, 24, 25, 28, 29
+    SetTextCentre(1)
+    local str = CreateVarString(10, "LITERAL_STRING", car.curr_speed.."km/h", Citizen.ResultAsLong())
+    DisplayText(str,0.46,0.9)
+    DrawSprite("INVENTORY_ITEMS", "weapon_melee_davy_lantern", 0.5, 0.9, 0.05, 0.05, 0.1, color1[1], color1[2], color1[3], color1[4], 0)
+    DrawSprite("hud_textures", "gang_savings", 0.53, 0.91, 0.04, 0.04, 0.1, color2[1], color2[2], color2[3], color2[4], 0)
+      end
+    else
+      Wait(800)
+    end
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------

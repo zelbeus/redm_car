@@ -13,13 +13,11 @@ elseif Config.framework == "redemrp-reboot" then
   TriggerEvent("redemrp_inventory:getData",function(call)
       data = call
   end)
-  RItems = exports.redemrp_inventory:GetItemsList()
   RedEM = exports["redem_roleplay"]:RedEM()
 elseif Config.framework == "vorp" then 
   TriggerEvent("getCore",function(core)
       VorpCore = core
   end)
-  
   VorpInv = exports.vorp_inventory:vorp_inventoryApi()
 elseif Config.framework == "qbr" then 
   qc = "qbr-core"

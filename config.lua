@@ -3,9 +3,9 @@ Config.framework = "redemrp-reboot" --"redemrp" or "redemrp-reboot" or "qbr" or 
 
 Config.menuapi = "redemrp_menu_base" --"redemrp_menu_base" or "menuapi"
 
-Config.Engine = 0x8AAA0AD4
-Config.Headlight = 0x80F28E95
-Config.Shop = 0x8AAA0AD4
+Config.Engine = 0x8AAA0AD4 -- LEFT ALT
+Config.Headlight = 0x80F28E95 -- L
+Config.Shop = 0x8AAA0AD4 -- LEFT ALT
 
 Config.WeirdSmokeAndSound = true
 
@@ -13,6 +13,8 @@ Config.SpawnCommand = true
 Config.Command = "spawn_car"
 Config.DeleteCommand = "delete_car"
 Config.ResetCommand = "reset_car"
+
+Config.NativeHUD = true
 
 Config.CarSpawns = {
     {pos = {2454.492, -1319.561, 45.433}, spawn = {x = 2447.080, y = -1321.614, z = 45.405, h = 95.208}, job = {"driver", "mechanic"}, name = "Car Mechanic"}
