@@ -235,7 +235,7 @@ RegisterServerEvent("redm_ford:spawn_car", function(id)
     if id then 
       spawn = Config.CarSpawns[id].spawn
     end
-    TriggerClientEvent("redm_ford:spawn_c", _source, spawn, Config.Carmodels[dat[1].model])
+    TriggerClientEvent("redm_ford:spawn_c", _source, spawn, Config.Carmodels[dat[1].model], dat[1].engine)
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
