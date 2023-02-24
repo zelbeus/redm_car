@@ -15,7 +15,7 @@ local function spawnCar(c)
     while not HasModelLoaded(model2) do
       Citizen.Wait(5)
   end
-    local vehicle = CreateVehicle( model, pc.x,pc.y,pc.z,pc.h, 1, 1, 0)
+    local vehicle = CreateVehicle( model, pc.x,pc.y,pc.z,(pc.h or 1.0), 1, 1, 0)
     SetEntityAlpha(vehicle, 0)
     Wait(100)
     local obj = CreateObject(model2, pc.x, pc.y, pc.z, 1, 1, 1)
