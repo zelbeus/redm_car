@@ -2,7 +2,9 @@
 RedM Car script for doc_modelt
 Makes the coach4 vehicle into a spawnable car
 
-**1.0 Release**
+**1.0 Release** 
+
+https://streamable.com/1r1xvt
 
 Now car can be purchased from the Shops, and Engine can be upgraded. Light can be turned off and on and there is some kind of smoke&sound effect with native
 
