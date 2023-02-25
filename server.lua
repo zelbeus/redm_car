@@ -181,9 +181,11 @@ RegisterServerEvent("redm_ford:open_menu", function(id)
           go = true
         end
       end
-      if go then 
-        TriggerClientEvent("redm_ford:open_menu_c", _source, id)
-      end
+    end
+    if go then 
+      TriggerClientEvent("redm_ford:open_menu_c", _source, id)
+    else
+      TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.NoJob, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
     end
   end
 end)
@@ -199,8 +201,13 @@ RegisterServerEvent("redm_ford:buy_car", function(id)
       if player.money >= price then 
         InsertSQL({identifier=player.identifier, charid = player.charid}, id)
         RemovePMoney(_source, price)
+        TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.CarPurchased, Config.Textures.tick[1], Config.Textures.tick[2], 2500)
+      else
+        TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.NoMoney, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
       end
     end
+  else
+    TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.AlreadyHave, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -211,15 +218,26 @@ RegisterServerEvent("redm_ford:buy_upgrade", function(id)
   Wait(400)
   if dat then 
     if id > dat[1].engine then 
-      if Config.Upgrades[id] then 
-        local price = Config.Upgrades[id].price
-        if player.money >= price then 
-          TriggerClientEvent("redm_ford:upgrade_update", _source, id)
-          UpdateSQL({identifier=player.identifier, charid = player.charid}, id)
-          RemovePMoney(_source, price)
+      if id == (dat[1].engine+1) then 
+        if Config.Upgrades[id] then 
+          local price = Config.Upgrades[id].price
+          if player.money >= price then 
+            TriggerClientEvent("redm_ford:upgrade_update", _source, id)
+            UpdateSQL({identifier=player.identifier, charid = player.charid}, id)
+            RemovePMoney(_source, price)
+            TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.UpgradePurchased.." ("..Config.Upgrades[id].label..")", Config.Textures.tick[1], Config.Textures.tick[2], 2500)
+          else
+            TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.NoMoney, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
+          end
         end
+      else
+        TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.BuyPrevious.." ("..(dat[1].engine+1)..")", Config.Textures.locked[1], Config.Textures.locked[2], 2500)
       end
+    else
+      TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.BetterEngine, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
     end
+  else
+    TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.NoCar, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -234,6 +252,12 @@ RegisterServerEvent("redm_ford:spawn_car", function(id)
       spawn = Config.CarSpawns[id].spawn
     end
     TriggerClientEvent("redm_ford:spawn_c", _source, spawn, Config.Carmodels[dat[1].model], dat[1].engine)
+  else
+    TriggerClientEvent("Notification:redm_car", _source, Config.Texts.CarDealer, Config.Texts.NoCar, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
   end
+end)
+--------------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("redm_ford:horn", function(c)
+  TriggerClientEvent("redm_ford:horn_c", -1, c)
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------

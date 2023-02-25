@@ -2,14 +2,16 @@ fx_version "adamant"
 games { "rdr3" }
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 author 'RicX'
-
 dependency 'doc_modelt'
-
-
 lua54 'yes'
 
+files {
+    'not.js',
+}
+
 client_scripts {
-    'client.lua'
+    'client.lua',
+    'not.js',
 }
 
 server_scripts {
@@ -20,3 +22,5 @@ server_scripts {
 shared_scripts {
     'config.lua',
 }
+
+export 'GetRedMCar' 

@@ -19,6 +19,21 @@ local function SetLightsColorForEntity(ob, r,g,b)
   Citizen.InvokeNative(0x6EC2A67962296F49, ob, r,g,b)
 end
 --------------------------------------------------------------------------------------------------------------------------------------------
+local function Horn(cc)
+  local counter = 1
+  while not Citizen.InvokeNative(0xD9130842D7226045, "Horns_Bugle_Sounds",0) and counter <= 100 do
+      counter = counter + 1
+      Citizen.Wait(0)
+  end
+  Citizen.InvokeNative(0xCCE219C922737BFA,"long", cc.x, cc.y, cc.z-1.0, "Horns_Bugle_Sounds", true, 0, true, 0)
+  Wait(1000)
+  Citizen.InvokeNative(0x531A78D6BF27014B,"Horns_Bugle_Sounds")
+end
+--------------------------------------------------------------------------------------------------------------------------------------------
+function GetRedMCar()
+  return car
+end
+--------------------------------------------------------------------------------------------------------------------------------------------
 local function spawnCar(c, md, engine)
   if not car then 
     local pc = GetEntityCoords(PlayerPedId())
@@ -95,6 +110,8 @@ local function spawnCar(c, md, engine)
     FreezeEntityPosition(vehicle, 0)
     SetModelAsNoLongerNeeded(model)
     SetModelAsNoLongerNeeded(model2)
+  else
+    TriggerEvent("Notification:redm_car", Config.Texts.Car, Config.Texts.AlreadySpawned, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
   end
 end
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -109,7 +126,11 @@ RegisterCommand(Config.ResetCommand, function(_, args)
     local dist = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(car.vehicle))
     if dist < 4.0 then 
       SetEntityRotation(car.vehicle, 0.0, 0.0, 0.0, 2, 1)
+    else
+      TriggerEvent("Notification:redm_car", Config.Texts.Car, Config.Texts.FarAway, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
     end
+  else
+    TriggerEvent("Notification:redm_car", Config.Texts.Car, Config.Texts.NotSpawned, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -121,6 +142,8 @@ RegisterCommand(Config.DeleteCommand, function(_, args)
     DeleteEntity(car.headlight_b)
     DeleteEntity(car.object)
     car = nil
+  else
+    TriggerEvent("Notification:redm_car", Config.Texts.Car, Config.Texts.NotSpawned, Config.Textures.locked[1], Config.Textures.locked[2], 2500)
   end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -152,6 +175,13 @@ Citizen.CreateThread(function()
     Wait(10)
     if car then 
       if car.incar then 
+        if IsControlPressed(0, Config.Horn) then 
+          if car.engine and not car.horn then
+            car.horn = true
+            TriggerEvent("redm_ford:horn_active")
+            TriggerServerEvent("redm_ford:horn",GetEntityCoords(PlayerPedId()))
+          end
+        end
         if IsControlPressed(0, Config.Engine) then 
           if not car.engine then 
             print("engine on")
@@ -169,7 +199,7 @@ Citizen.CreateThread(function()
             SetLightIntensityForObject(car.headlight_b, 0.0)
           end
           car.engine = not car.engine
-          Wait(1500)
+          Wait(1200)
         end
         if IsControlPressed(0, Config.Headlight) then 
           if car.engine then 
@@ -235,7 +265,7 @@ Citizen.CreateThread(function()
   local color1, color2 = {126,0,0, 200}, {126,0,0, 200}
   while true do
     Citizen.Wait(5)
-    if car then 
+    if car and Config.NativeHUD then 
       if car.incar then 
         if car.engine then 
           color2 = {0,126,0, 200}
@@ -264,6 +294,21 @@ end)
 --------------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("redm_ford:spawn_c", function(pos, md, engine)
   spawnCar(pos, md, engine)
+end)
+--------------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("redm_ford:horn_active", function()
+  Wait(2000)
+  if car then 
+    car.horn = false
+  end
+end)
+--------------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("redm_ford:horn_c", function(c)
+  local cc = GetEntityCoords(PlayerPedId())
+  local dist = #(c-cc)
+  if dist < 15.0 then
+    Horn(c)
+  end
 end)
 --------------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("redm_ford:upgrade_update", function(id)
@@ -359,4 +404,26 @@ AddEventHandler('onResourceStop', function(resourceName)
     if menuOpen then 
       MenuData.CloseAll()
     end
+end)
+--------------------------------------------------------------------------------------------------------------------------------------------
+local VORPcore = nil
+RegisterNetEvent('Notification:redm_car')
+AddEventHandler('Notification:redm_car', function(t1, t2, dict, txtr, timer)
+    if not HasStreamedTextureDictLoaded(dict) then
+        RequestStreamedTextureDict(dict, true) 
+        while not HasStreamedTextureDictLoaded(dict) do
+            Citizen.Wait(5)
+        end
+    end
+    if Config.VorpNotif then 
+      if not VORPcore then 
+        TriggerEvent("getCore", function(core)
+            VORPcore = core
+        end)
+      end
+      VORPcore.NotifyAvanced(t1, t2, dict, txtr, "COLOR_PURE_WHITE", timer)
+    else
+      exports[GetCurrentResourceName()].LeftNot(0, tostring(t1), tostring(t2), tostring(dict), tostring(txtr), tonumber(timer))
+    end
+    SetStreamedTextureDictAsNoLongerNeeded(dict)
 end)
