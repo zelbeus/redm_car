@@ -10,6 +10,14 @@ Now car can be purchased from the Shops, and Engine can be upgraded. Light can b
 
 Works on RedEM:RP & VORP & QBR & QR (change in config)
 
+**Update 1.1**
+
+Added Notifications
+
+Added Horn Interaction (Key F)
+
+Added Upgrade Feature - Players can buy engine upgrades one by one, not possible to upgrade from 1 to max immediately
+
 
 **Video**: https://streamable.com/zvfjli
 
