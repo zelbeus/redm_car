@@ -62,7 +62,7 @@ function GetPlayerData(src)
       a = {identifier = identifier, charid = charid, name = pname, money = money, job = job}
   elseif Config.framework == "qbr" or Config.framework == "qbr2" then 
       local User 
-      if  Config.Framework == "qbr" then
+      if  Config.framework == "qbr" then
           User = exports[qc]:GetPlayer(_source)
       else
           User = QRCore.Functions.GetPlayer(_source)
