@@ -160,7 +160,7 @@ function RemovePMoney(src, value)
       Character.removeCurrency(0 , value)
   elseif Config.framework == "qbr" or Config.framework == "qbr2" then 
       local User 
-      if  Config.Framework == "qbr" then
+      if  Config.framework == "qbr" then
           User = exports[qc]:GetPlayer(src)
       else
           User = QRCore.Functions.GetPlayer(src)
