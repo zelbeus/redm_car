@@ -324,8 +324,7 @@ RegisterNetEvent("redm_ford:upgrade_menu", function(id)
 
   for i,v in pairs(Config.Upgrades) do 
       local nr = #elements+1
-      elements[nr] = v
-      elements[nr].label = elements[nr].label.." $"..elements[nr].price
+      elements[nr] = {label = v.label.." $"..v.price, value = v.value, desc = v.desc, value2 = v.value2, price = v.price}
   end 
 
   MenuData.Open('default', GetCurrentResourceName(), 'car_dealer_menu_upgrades',{
